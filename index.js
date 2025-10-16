@@ -12,19 +12,23 @@ dotenv.config()
 
 conectarDB()
 
-const dominiosPermitidos = [process.env.FRONTEND_URL]
+const whitelist = [process.env.FRONTEND_URL, 'http://localhost:3000'];
 
-const corsOption = {
-    origin: function(origin, callback) {
-        if(dominiosPermitidos.indexOf(origin) !== -1){
-            //el origen del request esta permitido
-            callback(null, true)
-        } else {
-            callback(new Error('No permitido por CORS'))
-        }
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+
+    const isAllowed = whitelist.some(url => origin.startsWith(url));
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log(`Bloqueado por CORS: ${origin}`);
+      callback(new Error('No permitido por CORS'));
     }
-}
-app.use(cors(corsOption))
+  },
+  credentials: true,
+};
+app.use(cors(corsOptions));
 
 app.use("/api/veterinarios", veterinarioRoutes)
 app.use("/api/pacientes", pacienteRoutes)
