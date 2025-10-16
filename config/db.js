@@ -10,7 +10,8 @@ const conectarDB = async () => {
         );
 
         const url = `${db.connection.host}:${db.connection.port}`
-        console.log(`MongoDB conectado en: ${url}`)
+        console.log(`MongoDB conectado`)
+        //console.log(`MongoDB conectado en: ${url}`)
     } catch (error) {
         console.log(`error: ${error.mensaje}`)
         process.exit(1)
